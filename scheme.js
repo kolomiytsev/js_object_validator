@@ -54,5 +54,30 @@ module.exports = {
                 return true;
             };
         }
+    },
+    email: {
+        defaultScheme: {required: false, min: 5, max: 60},
+        validate: function ( data ) {
+            var validationScheme = setValidationScheme.call(this, data);
+            var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+            return function () {
+                var len = this.length;
+                if (this === undefined) return !validationScheme.required;
+                if (!(this instanceof String) || (len < validationScheme.min) ||
+                    (len > validationScheme.max)) return false;
+                return re.test(this);
+            };
+        }
+    },
+    object: {
+        defaultScheme: {required: false},
+        validate: function ( data ) {
+            var validationScheme = setValidationScheme.call(this, data);
+            return function () {
+                if (this === undefined) return !validationScheme.required;
+                if (!((!!this) && (this.constructor === Object))) return false;
+                return true;
+            };
+        }
     }
 };
